@@ -1,6 +1,5 @@
 from TTS.api import TTS
 from ttsUtils import createFileName, findInputFiles, printToLog
-import os
 
 ############################
 # Text files from resources/input/ to audio
