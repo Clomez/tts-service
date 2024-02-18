@@ -1,7 +1,5 @@
 from TTS.api import TTS
-from logger import printToLog
-from ttsUtils import createFileId, findInputFiles
-
+from ttsUtils import createFileName, findInputFiles, printToLog
 import os
 
 ############################
@@ -11,9 +9,10 @@ import os
 
 # CONFIGS
 # See README for explanations
-lang = "en"
-speaker_wav = "tts/en_sample.wav"
-speaker = "Abrahan Mack"
+lang = "pl"
+speaker_wav = "tts/fi_sample3.wav" # Custom wav voice
+speaker = "Tanja Adelina"
+model_name = "tts_models/multilingual/multi-dataset/xtts_v2"
 
 # Extra args
 split_sentancess = True
@@ -21,22 +20,19 @@ speed = 1 # Not in use
 
 file_out_path = "audio/"
 file_input_path = "./resources/input/"
-char_limiter = 500
-
-models = "XTTS-v2/tts_models/multilingual/multi-dataset/xtts_v2"
+char_limiter = 20000
 
 ## App
 def toFile(txt):
-    tts = TTS(model_name = models)
-    id = createFileId()
+    tts = TTS(model_name = model_name)
+    id = createFileName()
     tts.tts_to_file(
         text=txt, 
-        # speaker_wav=speaker_wav, # either speaker or speaker_wav, not both
-        speaker=speaker,
+        speaker_wav=speaker_wav, # either speaker or speaker_wav, not both
+        # speaker=speaker,
         language=lang, 
-        file_path=f"{file_out_path}{createFileId()}.wav",
-        enable_text_splitting = split_sentancess
-        )
+        file_path=f"{file_out_path}{createFileName()}.wav",
+        enable_text_splitting = split_sentancess)
     
     printToLog(f"Done generating file {id}")
 
@@ -45,6 +41,8 @@ if __name__ == "__main__":
         inputArr = findInputFiles(file_input_path)
         if len(inputArr) > 0:
             printToLog(f"TTS Service found {len(inputArr)} input files.")
+        else:
+            printToLog("ERROR: No Input files found")
 
         # FILE INPUT LOOP
         for input in inputArr:
