@@ -1,0 +1,19 @@
+from flask import Flask
+
+app = Flask(__name__)
+import os
+
+def findInputFiles():
+    return os.listdir("audio/")
+ 
+@app.route('/list')
+def list():
+   return findInputFiles()
+
+@app.route('/<id>/get')
+def getFile(id):
+   print("TODO")
+   return "TODO"
+ 
+if __name__ == '__main__':
+   app.run()
