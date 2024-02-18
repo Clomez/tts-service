@@ -4,3 +4,4 @@ venv/
 scrap
 log/
 audio/
+resources/input/test_input.txt
