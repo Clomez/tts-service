@@ -1,19 +1,56 @@
-from flask import Flask
+from flask import Flask, send_file, request, jsonify
+import os
+from ttsUtils import createFileName, printToLog
+from request_service import requestService
+import time
+
+############################
+# Flask API server routing
+# list and distribute wav files via API
+###########################
+
+path_to_files = "audio/"
+path_to_input = f"tmp/input"
+
+host = "http://localhost:5000"
 
 app = Flask(__name__)
-import os
 
-def findInputFiles():
-    return os.listdir("audio/")
+def createInputFile(data, filename):
+	try:
+		with open(f"{path_to_input}/{filename}", 'w') as f:
+			f.write(str(data))
+			f.close()
+
+	except FileNotFoundError as e:
+		printToLog(f"Error no input file")
+
+def listFiles():
+    return os.listdir(path_to_files)
  
 @app.route('/list')
 def list():
-   return findInputFiles()
+   return listFiles()
 
 @app.route('/<id>/get')
 def getFile(id):
-   print("TODO")
-   return "TODO"
- 
+	try:
+		return send_file(f'{path_to_files}/{id}')
+	except Exception as e:
+		return str(e)
+      
+@app.route('/request/<name>', methods=['POST'])
+def createRequest(name):
+	filename = f"{name}-{createFileName()}"
+
+	data = request.get_data()
+
+	createInputFile(data.decode('utf-8'), filename)
+	time.sleep(2)
+
+	requestService(filename, path_to_input)
+	
+	return f"\n Link: {host}/{filename}.wav/get"
+
 if __name__ == '__main__':
    app.run()
