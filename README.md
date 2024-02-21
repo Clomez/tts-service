@@ -5,7 +5,8 @@ Text to speak using AI models
 ### PIP
 pip install tts sounddevice
 
-### XTTS-v2
+### XTTS-v2 (is this even needed?)
+https://docs.coqui.ai/en/latest/
 https://huggingface.co/coqui/XTTS-v2
 Git clone https://huggingface.co/coqui/XTTS-v2
 
@@ -22,12 +23,14 @@ activate git bash:
 Run script init_workspace.bash/sh
 
 ## Local usage
-### start backend localy
-> py [file.py]
-> py example_code.py
-> py text-to-file.py
+### start flask API (flask / server)
+Start local data API
+> py route_server.py
 
-### Send text to read
+routes:
+route_server.py
+
+### Send text to read (socket)
 save text to file
 > py client.py < [file]
 file will be generated to audio/
@@ -46,7 +49,7 @@ for multi-lingual xtts v2 use: "tts_models/multilingual/multi-dataset/xtts_v2"
 Name format: type/language/dataset/model
 
 Finnish:
-'Finnish: tts_models/fi/css10/vit'
+with model: 'Finnish: tts_models/fi/css10/vit'
 
 #### 1.2 Speaker wav
 Different from speaker, can be found from /tts
