@@ -1,5 +1,5 @@
 import os
-
+from configs import config
 from datetime import datetime
 
 def findInputFiles(path):
@@ -32,3 +32,12 @@ def printToLog(msg):
 def printToProcessLog(msg):
     with open('log/process_log.txt', 'a') as f:
         f.write(f"{hourStamp()} -- {msg}\n")
+
+def createInputFile(data, filename):
+	try:
+		with open(f"{config['path_to_input']}/{filename}", 'w') as f:
+			f.write(str(data))
+			f.close()
+
+	except FileNotFoundError as e:
+		printToLog(f"Error no input file")

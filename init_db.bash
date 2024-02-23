@@ -1,4 +1,4 @@
 #!/bin/bash
 
-py resources/drop_db.py
-py resources/db_init.py
+py resources/script/drop_db.py
+py resources/script/db_init.py

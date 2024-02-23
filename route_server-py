@@ -1,79 +1,42 @@
-from flask import Flask, send_file, request, jsonify
+from flask import Flask, send_file, request
 import threading
-from ttsUtils import createFileName, printToLog, getUuid
+from ttsUtils import createInputFile, printToLog
 from request_service import requestService
-import time
-from datetime import date
-import sqlite3
+from db_handler import commit_to_audio, read_all_from_audio
+from configs import config
+from routeUtils import getArgs, return404, futureResourceLocation, getResourceLocation
 
 ############################
 # Flask API server routing
 # list and distribute wav files via API
 ###########################
 
-path_to_files = "audio/"
-path_to_input = "tmp/input"
-host = "http://localhost:5000"
-
-fields = "(ID,NAME,THEME,TITLE,LANGUAGE,DATE,USER) "
-insert = "INSERT INTO AUDIO "
-
 app = Flask(__name__)
-
-def createInputFile(data, filename):
-	try:
-		with open(f"{path_to_input}/{filename}", 'w') as f:
-			f.write(str(data))
-			f.close()
-
-	except FileNotFoundError as e:
-		printToLog(f"Error no input file")
-
-def listFiles():
-	conn = sqlite3.connect('audio_data.db')
-	cur = conn.cursor()
-	cur.execute("SELECT * FROM AUDIO")
- 
-	return cur.fetchall()
 
 @app.route('/list')
 def list():
-   return listFiles()
+   return read_all_from_audio()
 
 @app.route('/<id>/get')
 def getFile(id):
 	try:
-		return send_file(f'{path_to_files}/{id}')
+		return send_file(getResourceLocation(id))
 	except Exception as e:
-		return str(e)
+		printToLog(f"ERROR {e}")
+		return return404()
       
 @app.route('/request/<name>', methods=['POST'])
 def createRequest(name):
-	filename = f"{name}-{createFileName()}"
 
-	data = request.get_data()
-	theme = request.args.get('theme')
-	user = request.args.get('user')
-	title = request.args.get('title')
-	language = request.args.get('language')
-	id = getUuid()
+	args = getArgs(name, request)
 
-	conn = sqlite3.connect('audio_data.db')
-	conn.execute(f"{insert}"
-				 f"{fields}"
-				 f"VALUES ('{id}', '{filename}', '{title}', '{theme}', " 
-				 f"'{language}', '{str(date.today())}', '{user}' )")
+	createInputFile(args['dataSet'].decode('utf-8'), args['filename'])
+	commit_to_audio(args)
 
-	conn.commit()
-	conn.close()
-
-	createInputFile(data.decode('utf-8'), filename)
-	time.sleep(2)
-	thread = threading.Thread(target=requestService, args=(filename, path_to_input, language))
+	thread = threading.Thread(target=requestService, args=(args['filename'], config['path_to_input'], args['language']))
 	thread.start()
 
-	return f"\n Link: {host}/{filename}.wav/get"
+	return futureResourceLocation(args)
 
 if __name__ == '__main__':
-   conn = sqlite3.connect('audio_data.db')
    app.run()

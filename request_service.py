@@ -36,8 +36,9 @@ def toFile(txt, fileName, language):
 
 
 def requestService(filename, path_to_input, language):
+    time.sleep(2) # ugly hack for ensuring input file has time to write
+
     printToLog(f"Starting requested job id: {filename} in new thread")
-    time.sleep(2)
 
     file = f"{path_to_input}/{filename}"
 
