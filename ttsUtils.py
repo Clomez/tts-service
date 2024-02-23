@@ -5,6 +5,10 @@ from datetime import datetime
 def findInputFiles(path):
     return os.listdir(path)[1:] # rm .git from arr
 
+def getUuid():
+    import uuid
+    return str(uuid.uuid4())
+
 def createFileName():
     import uuid
     uuid = str(uuid.uuid4())
