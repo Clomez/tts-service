@@ -9,9 +9,9 @@ import time
 
 # CONFIGS
 # See README for explanations
-lang = "en"
+# lang = "en"
 speaker_wav = "tts/fi_sample3.wav" # Custom wav voice
-speaker = "Andrew Chipper"
+speaker = "Abrahan Mack"
 model_name = "tts_models/multilingual/multi-dataset/xtts_v2"
 
 # Extra args
@@ -22,20 +22,20 @@ file_out_path = "audio/"
 char_limiter = 20000
 
 ## App
-def toFile(txt, fileName):
+def toFile(txt, fileName, language):
     tts = TTS(model_name = model_name)
     tts.tts_to_file(
         text=txt, 
         # speaker_wav=speaker_wav, # either speaker or speaker_wav, not both
         speaker=speaker,
-        language=lang, 
+        language=language, 
         file_path=f"{file_out_path}{fileName}.wav",
         enable_text_splitting = split_sentancess)
     
     printToLog(f"Done generating file {fileName}")
 
 
-def requestService(filename, path_to_input):
+def requestService(filename, path_to_input, language):
     printToLog(f"Starting requested job id: {filename} waiting for file")
     time.sleep(2)
 
@@ -44,7 +44,7 @@ def requestService(filename, path_to_input):
     try:
         with open(f'{file}', 'r') as f:
             chunk = f.read()
-            toFile(chunk, filename)
+            toFile(chunk, filename, language)
             f.close
 
     except FileNotFoundError as e:
