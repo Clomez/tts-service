@@ -4,7 +4,6 @@ config = {
     "host" : "http://localhost:5000",
 }
 
-
 tts_config = {
     "speaker_wav" : "tts/fi_sample3.wav", # Custom wav voice
     "speaker" : "Abrahan Mack",

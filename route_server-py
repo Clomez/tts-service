@@ -21,20 +21,21 @@ def list():
 def getFile(id):
 	try:
 		return send_file(getResourceLocation(id))
+	
 	except Exception as e:
 		printToLog(f"ERROR {e}")
 		return return404()
       
 @app.route('/request', methods=['POST'])
 def createRequest():
-	
+
 	validateRequestArgs(request)
 	args = getArgs(request)
 
-	createInputFile(args['dataSet'].decode('utf-8'), args['filename'])
+	createInputFile(args)
 	commit_to_audio(args)
 
-	thread = threading.Thread(target=requestService, args=(args['filename'], config['path_to_input'], args['language']))
+	thread = threading.Thread(target=requestService, args=(args,))
 	thread.start()
 
 	return futureResourceLocation(args)
