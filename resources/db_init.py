@@ -1,6 +1,6 @@
 import sqlite3
 
-conn = sqlite3.connect('test.db')
+conn = sqlite3.connect('audio_data.db')
 
 conn.execute('''CREATE TABLE AUDIO
          (ID INT PRIMARY KEY NOT NULL,

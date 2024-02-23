@@ -30,7 +30,7 @@ def createInputFile(data, filename):
 		printToLog(f"Error no input file")
 
 def listFiles():
-	conn = sqlite3.connect('test.db')
+	conn = sqlite3.connect('audio_data.db')
 	cur = conn.cursor()
 	cur.execute("SELECT * FROM AUDIO")
  
@@ -58,7 +58,7 @@ def createRequest(name):
 	language = request.args.get('language')
 	id = getUuid()
 
-	conn = sqlite3.connect('test.db')
+	conn = sqlite3.connect('audio_data.db')
 	conn.execute(f"{insert}"
 				 f"{fields}"
 				 f"VALUES ('{id}', '{filename}', '{title}', '{theme}', " 
@@ -75,5 +75,5 @@ def createRequest(name):
 	return f"\n Link: {host}/{filename}.wav/get"
 
 if __name__ == '__main__':
-   conn = sqlite3.connect('test.db')
+   conn = sqlite3.connect('audio_data.db')
    app.run()
