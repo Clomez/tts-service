@@ -4,7 +4,7 @@ from ttsUtils import createInputFile, printToLog
 from request_service import requestService
 from db_handler import commit_to_audio, read_all_from_audio
 from configs import config
-from routeUtils import getArgs, return404, futureResourceLocation, getResourceLocation
+from routeUtils import getArgs, return404, futureResourceLocation, getResourceLocation, validateRequestArgs
 
 ############################
 # Flask API server routing
@@ -25,10 +25,11 @@ def getFile(id):
 		printToLog(f"ERROR {e}")
 		return return404()
       
-@app.route('/request/<name>', methods=['POST'])
-def createRequest(name):
-
-	args = getArgs(name, request)
+@app.route('/request', methods=['POST'])
+def createRequest():
+	
+	validateRequestArgs(request)
+	args = getArgs(request)
 
 	createInputFile(args['dataSet'].decode('utf-8'), args['filename'])
 	commit_to_audio(args)

@@ -1,6 +1,27 @@
 # TTS-Service
 Text to speak using AI models
 
+## Text-To-Audio API
+- API to create requests for reading a text file to audio
+- API interface for listing generated files
+- API interface for listening / downloading files
+
+### Send text
+> curl -X POST -d @data "localhost:5000/request?theme=Programming&user=clomez&language=en&title=License_grumbles_2"
+
+- User and data are required parameters!
+
+### Listing all files
+> curl "localhost:5000/list"
+
+### Logs
+Route logs error and info into log/log.txt
+Reader process fork logs into log/process_log.txt
+
+### Tech
+- Flask API interface
+- simple SQLite database
+
 ## Installation
 ### PIP
 pip install tts sounddevice
