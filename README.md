@@ -1,90 +1,100 @@
-# TTS-Service
+# TTS-Services
 Text to speak using AI models
+- Flask API interface to make audio files from text
+- Text file to audio file script
+- Example scripts
 
-## Text-To-Audio API
-- API to create requests for reading a text file to audio
-- API interface for listing generated files
-- API interface for listening / downloading files
+## Text-To-Audio API interface
+provided by route_server.py:
 
-### Send text
-> curl -X POST -d @data "localhost:5000/request?theme=Programming&user=clomez&language=en&title=License_grumbles_2"
+| Desc.   |      Route      |  Method |
+|----------|:-------------:|------:|
+| request file |  /request | POST |
+| get file |    /$id/get   |   GET |
+| list files | /list |    GET |
+    
+### Starting API locally
+1. venv is recommended
+2. install needed packages using pip
+3. init sqlite db
+4. start server
+```
+> py -m venv /path/to/venv
+> pip install tts ...
+> py resources/scipts/db_init.py
+> py route_server.py
+```
 
-- User and data are required parameters!
+### Request file
+Posting to this endpoint will start a new process which translates text to audio.
+endpoint will return link for eventual resource location, from which file can be obtained after the request is fully processed. 
+
+Processing a file will take some time, depending on host machines hardware capabilities.
+
+| Query args |          |                                          |
+|------------|----------|------------------------------------------|
+| Required   | user     | sender of file, also appears in filename |
+| Optional   | theme    | audio theme, like history or finances    |
+| Optional   | language | language used for tts reader             |
+| Optional   | title    | title for audio recording                |
+
+```
+Post example using file with text and curl:
+
+Input data is given with -d @file
+> curl -X POST -d @text_to_read_file "localhost:5000/request?theme=Programming&user=clomez&language=en&title=License_grumbles_2"
+```
+
+
+### Get file
+returns a file by id, for download.
+ID is returned when requesting a new process, or alternatively all IDs are returned by /list endpoint
 
 ### Listing all files
+List all files and fields stored in database
+```
 > curl "localhost:5000/list"
+```
+
+### System & TTS configs
+Some configs are hidden under the hood.
+They can be modified by changing the config.py file
 
 ### Logs
 Route logs error and info into log/log.txt
 Reader process fork logs into log/process_log.txt
 
-### Tech
-- Flask API interface
-- simple SQLite database
+To avoid conflicting with open files, each process should open their own log and write to that.
+Route also has its own log, for readability. these are mostly HTTP and SQL errors and infos.
 
-## Installation
-### PIP
-pip install tts sounddevice
-
-### XTTS-v2 (is this even needed?)
-https://docs.coqui.ai/en/latest/
-https://huggingface.co/coqui/XTTS-v2
-Git clone https://huggingface.co/coqui/XTTS-v2
-
-not bundled here, since repo is quite large in size.
-
-### Venv (optional)
-> python -m venv_name venv_loc
-
-activate git bash:
-> 'cd to Script folder inside venv_loc' (important)
-> '. activate ## dont forget the space'
-
-### Local setup
-Run script init_workspace.bash/sh
-
-## Local usage
-### start flask API (flask / server)
-Start local data API
-> py route_server.py
-
-routes:
-route_server.py
-
-### Send text to read (socket)
-save text to file
-> py client.py < [file]
-file will be generated to audio/
-
-### Special args
-#### Title
-add title to audio files like "Financial news" (TODO: Not yet implimented)
-
-### Args
+### Extra args
 #### 1.1 Models
 Select a model to use for recording voice.
 **other args are heavyly related to selected model**
 for multi-lingual xtts v2 use: "tts_models/multilingual/multi-dataset/xtts_v2"
 
+List available models via cli:
+```
 > tts --list_models
+```
 Name format: type/language/dataset/model
 
-Finnish:
+Currently 1 Finnish model:
 with model: 'Finnish: tts_models/fi/css10/vit'
 
 #### 1.2 Speaker wav
 Different from speaker, can be found from /tts
+Short clip to be used for generating the voice.
 
 #### 1.3 Speakers
 Speaker voice.
-
 - WILL clash with speaker_wav arg
-- Very Model dependant
+- Only available with xtts-v2 model
 
 xtts2 speakers:
 'Claribel Dervla', 'Daisy Studious', 'Gracie Wise', 'Tammie Ema', 'Alison Dietlinde', 'Ana Florence', 'Annmarie Nele', 'Asya Anara', 'Brenda Stern', 'Gitta Nikolina', 'Henriette Usha', 'Sofia Hellen', 'Tammy Grit', 'Tanja Adelina', 'Vjollca Johnnie', 'Andrew Chipper', 'Badr Odhiambo', 'Dionisio Schuyler', 'Royston Min', 'Viktor Eka', 'Abrahan Mack', 'Adde Michal', 'Baldur Sanjin', 'Craig Gutsy', 'Damien Black', 'Gilberto Mathias', 'Ilkin Urbano', 'Kazuhiko Atallah', 'Ludvig Milivoj', 'Suad Qasim', 'Torcull Diarmuid', 'Viktor Menelaos', 'Zacharie Aimilios', 'Nova Hogarth', 'Maja Ruoho', 'Uta Obando', 'Lidiya Szekeres', 'Chandra MacFarland', 'Szofi Granger', 'Camilla Holmström', 'Lilya Stainthorpe', 'Zofija Kendrick', 'Narelle Moon', 'Barbora MacLean', 'Alexandra Hisakawa', 'Alma María', 'Rosemary Okafor', 'Ige Behringer', 'Filip Traverse', 'Damjan Chapman', 'Wulf Carlevaro', 'Aaron Dreschner', 'Kumar Dahl', 'Eugenio Mataracı', 'Ferran Simen', 'Xavier Hayasaka', 'Luis Moray', 'Marcos Rudaski'
 
-#### 1.4 Lang
+### 1.4 Lang
 Language to be used for the recording.
 - Available in multi-lingual models.
 
