@@ -1,8 +1,13 @@
 # TTS-Services
-Text to speak using AI models
-- Flask API interface to make audio files from text
-- Text file to audio file script
-- Example scripts
+### TTS-API: Generate & Manage text-to-audio files and, other TTS py scripts using AI latest models
+- API interface for generating audio files from text
+- Storing, fetching and listing of all generated audio files.
+- Simple database implimentation for extra information & meta info storage.
+- XTTS-V2 model, and many others.
+- Other related and example TTS scripts
+    - Text file to audio file script
+    - TTS using sockets
+    - Example scripts
 
 ## Text-To-Audio API interface
 provided by route_server.py:
@@ -25,7 +30,7 @@ provided by route_server.py:
 > py route_server.py
 ```
 
-### Request file
+### Endpoint: Request file
 Posting to this endpoint will start a new process which translates text to audio.
 endpoint will return link for eventual resource location, from which file can be obtained after the request is fully processed. 
 
@@ -46,11 +51,11 @@ Input data is given with -d @file
 ```
 
 
-### Get file
+### Endpoint: Get file
 returns a file by id, for download.
 ID is returned when requesting a new process, or alternatively all IDs are returned by /list endpoint
 
-### Listing all files
+### Endpoint: Listing all files
 List all files and fields stored in database
 ```
 > curl "localhost:5000/list"
@@ -94,7 +99,7 @@ Speaker voice.
 xtts2 speakers:
 'Claribel Dervla', 'Daisy Studious', 'Gracie Wise', 'Tammie Ema', 'Alison Dietlinde', 'Ana Florence', 'Annmarie Nele', 'Asya Anara', 'Brenda Stern', 'Gitta Nikolina', 'Henriette Usha', 'Sofia Hellen', 'Tammy Grit', 'Tanja Adelina', 'Vjollca Johnnie', 'Andrew Chipper', 'Badr Odhiambo', 'Dionisio Schuyler', 'Royston Min', 'Viktor Eka', 'Abrahan Mack', 'Adde Michal', 'Baldur Sanjin', 'Craig Gutsy', 'Damien Black', 'Gilberto Mathias', 'Ilkin Urbano', 'Kazuhiko Atallah', 'Ludvig Milivoj', 'Suad Qasim', 'Torcull Diarmuid', 'Viktor Menelaos', 'Zacharie Aimilios', 'Nova Hogarth', 'Maja Ruoho', 'Uta Obando', 'Lidiya Szekeres', 'Chandra MacFarland', 'Szofi Granger', 'Camilla Holmström', 'Lilya Stainthorpe', 'Zofija Kendrick', 'Narelle Moon', 'Barbora MacLean', 'Alexandra Hisakawa', 'Alma María', 'Rosemary Okafor', 'Ige Behringer', 'Filip Traverse', 'Damjan Chapman', 'Wulf Carlevaro', 'Aaron Dreschner', 'Kumar Dahl', 'Eugenio Mataracı', 'Ferran Simen', 'Xavier Hayasaka', 'Luis Moray', 'Marcos Rudaski'
 
-### 1.4 Lang
+#### 1.4 Language
 Language to be used for the recording.
 - Available in multi-lingual models.
 
