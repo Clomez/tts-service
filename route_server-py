@@ -1,8 +1,10 @@
 from flask import Flask, send_file, request, jsonify
 import os
-from ttsUtils import createFileName, printToLog
+from ttsUtils import createFileName, printToLog, getUuid
 from request_service import requestService
 import time
+from datetime import date
+import sqlite3
 
 ############################
 # Flask API server routing
@@ -10,9 +12,11 @@ import time
 ###########################
 
 path_to_files = "audio/"
-path_to_input = f"tmp/input"
-
+path_to_input = "tmp/input"
 host = "http://localhost:5000"
+
+fields = "(ID,NAME,THEME,TITLE,LANGUAGE,DATE,USER) "
+insert = "INSERT INTO AUDIO "
 
 app = Flask(__name__)
 
@@ -26,8 +30,12 @@ def createInputFile(data, filename):
 		printToLog(f"Error no input file")
 
 def listFiles():
-    return os.listdir(path_to_files)
+	conn = sqlite3.connect('test.db')
+	cur = conn.cursor()
+	cur.execute("SELECT * FROM AUDIO")
  
+	return cur.fetchall()
+
 @app.route('/list')
 def list():
    return listFiles()
@@ -44,13 +52,28 @@ def createRequest(name):
 	filename = f"{name}-{createFileName()}"
 
 	data = request.get_data()
+	theme = request.args.get('theme')
+	user = request.args.get('user')
+	title = request.args.get('title')
+	language = request.args.get('language')
+	id = getUuid()
+
+	conn = sqlite3.connect('test.db')
+	conn.execute(f"{insert}"
+				 f"{fields}"
+				 f"VALUES ('{id}', '{filename}', '{title}', '{theme}', " 
+				 f"'{language}', '{str(date.today())}', '{user}' )")
+
+	conn.commit()
+	conn.close()
 
 	createInputFile(data.decode('utf-8'), filename)
 	time.sleep(2)
 
-	requestService(filename, path_to_input)
+	requestService(filename, path_to_input, language)
 	
 	return f"\n Link: {host}/{filename}.wav/get"
 
 if __name__ == '__main__':
+   conn = sqlite3.connect('test.db')
    app.run()
