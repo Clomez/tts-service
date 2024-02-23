@@ -1,5 +1,6 @@
 from TTS.api import TTS
 from ttsUtils import createFileName, findInputFiles, printToLog
+import argparse
 
 ############################
 # Text files from resources/input/ to audio
@@ -35,8 +36,17 @@ def toFile(txt):
     
     printToLog(f"Done generating file {id}")
 
+# START
+parser = argparse.ArgumentParser("simple_example")
+parser.add_argument("title", help="Title for file", type=str)
+parser.add_argument("theme", help="Theme for file", type=str)
+
+args = parser.parse_args()
+printToLog(f"args {args.title} {args.theme}")
+
 if __name__ == "__main__":
     try:
+        # printToLog(f"{")
         inputArr = findInputFiles(file_input_path)
         if len(inputArr) > 0:
             printToLog(f"TTS Service found {len(inputArr)} input files.")
