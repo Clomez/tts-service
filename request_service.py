@@ -1,5 +1,5 @@
 from TTS.api import TTS
-from ttsUtils import printToLog
+from ttsUtils import printToProcessLog as printToLog
 import time
 
 ############################
@@ -32,11 +32,11 @@ def toFile(txt, fileName, language):
         file_path=f"{file_out_path}{fileName}.wav",
         enable_text_splitting = split_sentancess)
     
-    printToLog(f"Done generating file {fileName}")
+    printToLog(f"Done generating file {fileName} - thread process shutting down")
 
 
 def requestService(filename, path_to_input, language):
-    printToLog(f"Starting requested job id: {filename} waiting for file")
+    printToLog(f"Starting requested job id: {filename} in new thread")
     time.sleep(2)
 
     file = f"{path_to_input}/{filename}"

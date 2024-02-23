@@ -28,3 +28,7 @@ def hourStamp():
 def printToLog(msg):
     with open('log/log.txt', 'a') as f:
         f.write(f"{hourStamp()} -- {msg}\n")
+
+def printToProcessLog(msg):
+    with open('log/process_log.txt', 'a') as f:
+        f.write(f"{hourStamp()} -- {msg}\n")
